@@ -1,13 +1,56 @@
 const express = require("express");
 const app = express();
 const db = require("./db");
+const hb = require("express-handlebars");
+const cookieParser = require("cookie-parser");
 
 // console.log("db: ", db);
 
+app.engine("handlebars", hb());
+app.set("view engine", "handlebars");
+
+// DON'T FORGET TO serve public folder
 app.use(express.static("./public"));
+
+app.use(
+    express.urlencoded({
+        extended: false,
+    })
+);
+
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
+    res.redirect("/petition");
+});
+
+app.get("/petition", (req, res) => {
+    if (!req.cookies.cookie) {
+        res.render("petition");
+    } else {
+        res.redirect("/thanks");
+    }
+});
+
+app.post("/petition", (req, res) => {
+    let first = req.body.first;
+    let last = req.body.last;
+    let signature = req.body.signature;
+    if (first != "" && last != "" && signature != "") {
+        db.addFirstLast(first, last)
+            .then(() => {
+                console.log("got your details");
+            })
+            .catch((err) => {
+                console.log("Error in addFirstLast:", err);
+            });
+
+        res.cookie("cookie", "agreed");
+        res.redirect("/thanks");
+    } else {
+        console.log("fail");
+    }
 });
 
 app.get("/cities", (req, res) => {
