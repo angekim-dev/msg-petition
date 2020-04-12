@@ -4,9 +4,10 @@
 <p>Something went wrong. Try again!</p>
 {{/if}}
 <form method="POST">
-    <input type="text" placeholder="First Name">
-    <input type="text" placeholder="Last Name">
-    <canvas width="300px" height="100px" id="signature"></canvas>
+    <p></p><input type="text" placeholder="First Name" name="first" autocomplete="off"></p>
+    <p></p><input type="text" placeholder="Last Name" name="last" autocomplete="off"></p>
+    <canvas id="canvas" width="300px" height="100px"></canvas>
+    <input type="hidden" id="hiddenInput">
     <div>sign here</div>
     <button>Submit</button>
 </form>
