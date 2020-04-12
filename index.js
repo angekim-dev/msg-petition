@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    if (!req.cookies.cookie) {
+    if (!req.cookies.agreed) {
         res.render("petition");
     } else {
         res.redirect("/thanks");
@@ -37,8 +37,9 @@ app.post("/petition", (req, res) => {
     let first = req.body.first;
     let last = req.body.last;
     let signature = req.body.signature;
+
     if (first != "" && last != "" && signature != "") {
-        db.addFirstLast(first, last)
+        db.addFirstLast(first, last, signature)
             .then(() => {
                 console.log("got your details");
             })
@@ -46,32 +47,40 @@ app.post("/petition", (req, res) => {
                 console.log("Error in addFirstLast:", err);
             });
 
-        res.cookie("cookie", "agreed");
+        res.cookie("agreed", true);
         res.redirect("/thanks");
     } else {
-        console.log("fail");
+        res.render("petition", { error: true });
     }
 });
 
-app.get("/cities", (req, res) => {
-    db.getCities() //returns promise
-        .then((results) => {
-            //OR {rows}
-            console.log("results: ", results.rows); //we only care about rows, that's why .rows OR just rows IF destructuring
-        })
-        .catch((err) => {
-            console.log("err in getCities: ", err);
-        });
+app.get("/thanks", (req, res) => {
+    if (!req.cookies.agreed) {
+        res.redirect("/petition");
+    } else {
+        console.log("agreed to cookies");
+        // db.totalSigners; //add more
+    }
 });
+// app.get("/cities", (req, res) => {
+//     db.getCities() //returns promise
+//         .then((results) => {
+//             //OR {rows}
+//             console.log("results: ", results.rows); //we only care about rows, that's why .rows OR just rows IF destructuring
+//         })
+//         .catch((err) => {
+//             console.log("err in getCities: ", err);
+//         });
+// });
 
-app.post("/add-city", (req, res) => {
-    db.addCity("Guayaquil", "Ecuador") //ideally user input coming from the server, not hard-coding like here
-        .then(() => {
-            console.log("yay that worked!");
-        })
-        .catch((err) => {
-            console.log("err in addCity: ", err);
-        });
-});
+// app.post("/add-city", (req, res) => {
+//     db.addCity("Guayaquil", "Ecuador") //ideally user input coming from the server, not hard-coding like here
+//         .then(() => {
+//             console.log("yay that worked!");
+//         })
+//         .catch((err) => {
+//             console.log("err in addCity: ", err);
+//         });
+// });
 
 app.listen(8080, () => console.log("petition server is listening!"));
