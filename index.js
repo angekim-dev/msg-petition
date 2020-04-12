@@ -59,7 +59,37 @@ app.get("/thanks", (req, res) => {
         res.redirect("/petition");
     } else {
         console.log("agreed to cookies");
-        // db.totalSigners; //add more
+        db.totalSigners()
+            .then((results) => {
+                res.render("thanks", {
+                    numberOfSignatures: results,
+                });
+            })
+            .catch((err) => {
+                console.log("Error in totalSigners: ", err);
+            });
+    }
+});
+
+app.get("/signers", (req, res) => {
+    if (!req.cookies.agreed) {
+        res.redirect("/petition");
+    } else {
+        db.getFirstLast()
+            .then((results) => {
+                let namesArray = [];
+                for (let i = 0; i < results.rows.length; i++) {
+                    let fullName = results.rows[i].first + results.rows[i].last;
+                    namesArray.push(fullName);
+                }
+                console.log(results.rows);
+                console.log(namesArray);
+
+                res.render("signers", { listOfNames: namesArray });
+            })
+            .catch((err) => {
+                console.log("Error in getFirstLast: ", err);
+            });
     }
 });
 // app.get("/cities", (req, res) => {
