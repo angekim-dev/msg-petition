@@ -6,7 +6,7 @@
     const canCtx = canvas.getContext("2d");
     const offset = canvas.getBoundingClientRect();
     let dataURL;
-    let hiddenInput = document.getElementById("hiddenInput");
+    // let hiddenInput = document.getElementById("hiddenInput");
 
     let drawing = false;
     let x = 0;
@@ -26,16 +26,18 @@
             y = e.clientY - offset.top;
             canCtx.lineTo(x, y);
             canCtx.stroke();
-            dataURL = canvas.toDataURL();
-            hiddenInput.val(dataURL);
+            dataURL = $("#canvas")[0].toDataURL();
+            $("#hiddenInput").val(dataURL);
+            console.log($("#hiddenInput").val(dataURL));
         }
     });
 
-    window.addEventListener("mouseup", (e) => {
+    window.addEventListener("mouseup", () => {
         if (drawing === true) {
             x = 0;
             y = 0;
             drawing = false;
         }
+        console.log(dataURL);
     });
 })();

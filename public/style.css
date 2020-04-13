@@ -1,3 +1,6 @@
 #canvas {
     border: dotted black;
 }
+#wentWrong {
+    color: red;
+}

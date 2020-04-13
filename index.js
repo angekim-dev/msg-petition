@@ -60,6 +60,9 @@ app.get("/thanks", (req, res) => {
     } else {
         console.log("agreed to cookies");
         db.totalSigners()
+            .then((result) => {
+                return result;
+            })
             .then((results) => {
                 res.render("thanks", {
                     numberOfSignatures: results,
@@ -79,7 +82,8 @@ app.get("/signers", (req, res) => {
             .then((results) => {
                 let namesArray = [];
                 for (let i = 0; i < results.rows.length; i++) {
-                    let fullName = results.rows[i].first + results.rows[i].last;
+                    let fullName =
+                        results.rows[i].first + " " + results.rows[i].last;
                     namesArray.push(fullName);
                 }
                 console.log(results.rows);

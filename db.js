@@ -22,7 +22,7 @@ module.exports.getFirstLast = () => {
 //SELECT to get total numbers of signers *count* by postgres
 module.exports.totalSigners = () => {
     return db.query(`SELECT COUNT(*) FROM signatures`).then((results) => {
-        return results.rowCount;
+        return results.rows[0].count;
     });
     // .catch((err) => {
     //     console.log("Error in totalSigners", err);
