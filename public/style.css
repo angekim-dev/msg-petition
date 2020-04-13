@@ -1,6 +1,70 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+article {
+    width: 90%;
+    margin: 10px auto;
+    padding: 10px;
+    background-color: whitesmoke;
+}
+body {
+    font-family: "Courier New", Courier, monospace;
+    background-image: url(./succulent.jpg);
+    overflow: hidden;
+}
+button {
+    padding: 5px;
+}
+footer {
+    background-color: gray;
+    position: fixed;
+    z-index: 1;
+    bottom: 0;
+    width: 100%;
+}
+h1 {
+    text-align: center;
+    background-color: gray;
+    color: whitesmoke;
+    padding: 20px;
+}
+h2 {
+    text-align: center;
+    margin: 20px;
+}
 #canvas {
     border: dotted black;
+    background-color: whitesmoke;
+}
+#listOfNames {
+    padding: 10px;
+    text-align: center;
 }
 #wentWrong {
     color: red;
+    text-align: center;
+    margin: 10px;
+    animation: blinking 1s infinite;
+}
+@keyframes blinking {
+    0% {
+        color: red;
+    }
+    49% {
+        color: red;
+    }
+    60% {
+        color: transparent;
+    }
+    80% {
+        color: transparent;
+    }
+    100% {
+        color: red;
+    }
+}
+#petitionForm {
+    text-align: center;
 }

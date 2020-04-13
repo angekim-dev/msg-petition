@@ -1,7 +1,12 @@
 <h1>You are not alone!</h1>
+<article>
+    <p>Here are the names of fellow heroes - just like you. They also believe in the PLANTiton and its cause.</p><br>
+    <p>PLANT CARE knowledge should be MANDATORY! No more dead plants, no more excuses!</p>
+</article>
+<h2>Your fellow signers are:</h2>
 {{!-- all first als last names displayed --}}
 {{!-- template expects array of objects with first and last name properties --}}
-<div>{{#listOfNames}}
+<div id="listOfNames">{{#listOfNames}}
     <p>{{.}}</p>
     {{/listOfNames}}
 </div>

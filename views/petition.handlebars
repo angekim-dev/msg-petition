@@ -1,13 +1,18 @@
-<h1>Petition</h1>
-<h2>Sign with your full name</h2>
+<h1>Welcome to the PLANTition</h1>
+<article>
+<p>As millenials and Gen-Zs we all know the struggle of keeping a plant alive. We all love plants because they make our houses cozy, they generate the much needed oxygen and they have a positive influence on our mental health.</p><br>
+<p>HOWEVER, most of us SUCK at keeping our house plants alive. And it hurts badly when they die, despite of our best efforts.</p><br>
+<p>This is why we are demanding PLANT CARE to be introduced as a new MANDATORY school subject. If YOU agree with this demand, please sign our petition. <3 </p>
+</article>
+<h2>Please, sign with your full name.</h2>
 {{#if error}}
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
-<form method="POST">
+<form id="petitionForm" method="POST">
     <p></p><input type="text" placeholder="First Name" name="first" autocomplete="off"></p>
-    <p></p><input type="text" placeholder="Last Name" name="last" autocomplete="off"></p>
+    <p></p><input type="text" placeholder="Last Name" name="last" autocomplete="off"></p><br>
     <canvas id="canvas" width="300px" height="100px"></canvas>
     <input type="hidden" id="hiddenInput" name="signature">
-    <div>sign here</div>
-    <button>Submit</button>
+    <div>Your signature here :) </div><br>
+    <button>SUBMIT</button>
 </form>
