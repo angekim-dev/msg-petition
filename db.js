@@ -4,7 +4,8 @@ const db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
 module.exports.addFirstLast = (first, last, signature) => {
     return db.query(
         `INSERT INTO signatures (first, last, signature) 
-        VALUES ($1, $2, $3)`, //one for each argument, an actual string, not a command
+        VALUES ($1, $2, $3)
+        RETURNING (id)`, //one for each argument, an actual string, not a command
         [first, last, signature] //also necessary
     );
 };

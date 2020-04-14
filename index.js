@@ -40,7 +40,8 @@ app.post("/petition", (req, res) => {
 
     if (first != "" && last != "" && signature != "") {
         db.addFirstLast(first, last, signature)
-            .then(() => {
+            .then((result) => {
+                console.log(result);
                 console.log("got your details");
             })
             .catch((err) => {
