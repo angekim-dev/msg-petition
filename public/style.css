@@ -11,15 +11,14 @@ article {
 }
 body {
     font-family: "Courier New", Courier, monospace;
-    background-image: url(./succulent.jpg);
-    overflow: hidden;
+    /* background-image: url(./succulent.jpg);
+    overflow: hidden; */
 }
 button {
     padding: 5px;
 }
 footer {
     background-color: gray;
-    position: fixed;
     z-index: 1;
     bottom: 0;
     width: 100%;
