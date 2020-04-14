@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const db = require("./db");
 const hb = require("express-handlebars");
-const cookieParser = require("cookie-parser");
+const cookieSession = require("cookie-session");
 
 // console.log("db: ", db);
 
@@ -18,7 +18,12 @@ app.use(
     })
 );
 
-app.use(cookieParser());
+app.use(
+    cookieSession({
+        secret: `I'm always angry.`,
+        maxAge: 1000 * 60 * 60 * 24 * 14,
+    })
+);
 
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
@@ -26,7 +31,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    if (!req.cookies.agreed) {
+    const { signatureId } = req.session;
+    if (!signatureId) {
         res.render("petition");
     } else {
         res.redirect("/thanks");
@@ -42,41 +48,49 @@ app.post("/petition", (req, res) => {
         db.addFirstLast(first, last, signature)
             .then((result) => {
                 console.log(result);
+                req.session.signatureId = result.rows[0].id;
                 console.log("got your details");
+                res.redirect("/thanks");
             })
             .catch((err) => {
                 console.log("Error in addFirstLast:", err);
             });
-
-        res.cookie("agreed", true);
-        res.redirect("/thanks");
     } else {
         res.render("petition", { error: true });
     }
 });
 
 app.get("/thanks", (req, res) => {
-    if (!req.cookies.agreed) {
+    const { signatureId } = req.session;
+    let numbers;
+    if (!signatureId) {
         res.redirect("/petition");
     } else {
         console.log("agreed to cookies");
         db.totalSigners()
             .then((result) => {
-                return result;
+                numbers = result;
             })
+            .catch((err) => {
+                console.log("Error in totalSigners", err);
+            });
+        db.getSignature(signatureId)
             .then((results) => {
+                console.log(results);
                 res.render("thanks", {
-                    numberOfSignatures: results,
+                    signaturePicture: results,
+                    numberOfSignatures: numbers,
                 });
             })
             .catch((err) => {
-                console.log("Error in totalSigners: ", err);
+                console.log("Error in getSignature: ", err);
             });
     }
 });
 
 app.get("/signers", (req, res) => {
-    if (!req.cookies.agreed) {
+    const { signatureId } = req.session;
+    if (!signatureId) {
         res.redirect("/petition");
     } else {
         db.getFirstLast()

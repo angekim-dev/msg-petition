@@ -35,7 +35,7 @@ h2 {
 }
 #canvas {
     border: dotted black;
-    background-color: whitesmoke;
+    /* background-color: whitesmoke; */
 }
 #listOfNames {
     padding: 10px;

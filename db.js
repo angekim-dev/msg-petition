@@ -5,7 +5,7 @@ module.exports.addFirstLast = (first, last, signature) => {
     return db.query(
         `INSERT INTO signatures (first, last, signature) 
         VALUES ($1, $2, $3)
-        RETURNING (id)`, //one for each argument, an actual string, not a command
+        RETURNING id`, //one for each argument, an actual string, not a command
         [first, last, signature] //also necessary
     );
 };
@@ -28,4 +28,12 @@ module.exports.totalSigners = () => {
     // .catch((err) => {
     //     console.log("Error in totalSigners", err);
     // });
+};
+
+module.exports.getSignature = (signatureId) => {
+    return db
+        .query(`SELECT signature FROM signatures WHERE id = ${signatureId};`)
+        .then((result) => {
+            return result.rows[0].signature;
+        });
 };
