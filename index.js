@@ -58,9 +58,16 @@ app.post("/register", (req, res) => {
         hash(password)
             .then((hashedPw) => {
                 console.log("hashedPw in /register: ", hashedPw);
-                res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
+                db.addRegistration(first, last, email, hashedPw).then(
+                    (result) => {
+                        console.log(result);
+                        req.session.userId = result.rows[0].id;
+                        console.log("got your registration");
+                        res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
+                    }
+                );
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log("Error in addRegistration: ", err));
     } else {
         res.render("register", { error: true });
     }
@@ -98,12 +105,10 @@ app.get("/petition", (req, res) => {
 });
 
 app.post("/petition", (req, res) => {
-    let first = req.body.first;
-    let last = req.body.last;
     let signature = req.body.signature;
 
-    if (first != "" && last != "" && signature != "") {
-        db.addFirstLast(first, last, signature)
+    if (signature != "") {
+        db.addFirstLast(signature)
             .then((result) => {
                 console.log(result);
                 req.session.signatureId = result.rows[0].id;
