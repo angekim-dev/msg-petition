@@ -39,9 +39,9 @@ module.exports.totalSigners = () => {
     // });
 };
 
-module.exports.getSignature = (signatureId) => {
+module.exports.getSignature = (id) => {
     return db
-        .query(`SELECT signature FROM signatures WHERE id = '${signatureId}';`)
+        .query(`SELECT signature FROM signatures WHERE id = '${id}';`)
         .then((result) => {
             return result.rows[0].signature;
         });

@@ -11,6 +11,9 @@ const { hash, compare } = require("./bc");
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
+// DON'T FORGET TO serve public folder
+app.use(express.static("./public"));
+
 app.use(
     express.urlencoded({
         extended: false,
@@ -31,15 +34,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// DON'T FORGET TO serve public folder
-app.use(express.static("./public"));
-
 ///ROUTES///
 
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
     res.redirect("/register");
 });
+
 app.get("/register", (req, res) => {
     res.render("register");
 });
@@ -111,8 +112,9 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    const { signatureId } = req.session;
-    if (!signatureId) {
+    const { user } = req.session;
+    // let signature_id = user.signatureId;
+    if (!user.signatureId) {
         res.render("petition");
     } else {
         res.redirect("/thanks");
@@ -121,12 +123,13 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", (req, res) => {
     let signature = req.body.signature;
-
+    const { user } = req.session;
+    let user_id = user.userId;
     if (signature != "") {
         db.addSignature(signature, user_id)
             .then((result) => {
                 console.log("Result of addSignature", result);
-                req.session.signatureId = result.rows[0].id;
+                user.signatureId = result.rows[0].id;
                 console.log("got your details");
                 res.redirect("/thanks");
             })
@@ -139,9 +142,9 @@ app.post("/petition", (req, res) => {
 });
 
 app.get("/thanks", (req, res) => {
-    const { signatureId } = req.session;
+    const { user } = req.session;
     let numbers;
-    if (!signatureId) {
+    if (!user.signatureId) {
         res.redirect("/petition");
     } else {
         console.log("agreed to cookies");
@@ -152,7 +155,7 @@ app.get("/thanks", (req, res) => {
             .catch((err) => {
                 console.log("Error in totalSigners", err);
             });
-        db.getSignature(signatureId)
+        db.getSignature(user.signatureId)
             .then((results) => {
                 console.log("Results of getSignature: ", results);
                 res.render("thanks", {
@@ -166,9 +169,11 @@ app.get("/thanks", (req, res) => {
     }
 });
 
+//SIGNERS BROKEN FOR NOW//
+
 app.get("/signers", (req, res) => {
-    const { signatureId } = req.session;
-    if (!signatureId) {
+    const { id } = req.session;
+    if (!id) {
         res.redirect("/petition");
     } else {
         db.getFirstLast()
