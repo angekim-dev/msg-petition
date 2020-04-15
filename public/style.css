@@ -35,6 +35,7 @@ h2 {
 }
 #canvas {
     border: dotted black;
+    color: red;
     /* background-color: whitesmoke; */
 }
 #listOfNames {

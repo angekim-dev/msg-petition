@@ -3,9 +3,9 @@
     console.log("script.js running");
 
     const canvas = document.getElementById("canvas");
-    // console.log(canvas);
+    console.log(canvas);
     const canCtx = canvas.getContext("2d");
-    // console.log(canCtx);
+    console.log(canCtx);
     const offset = canvas.getBoundingClientRect();
     let dataURL;
     let box = document.getElementById("hiddenInput");
