@@ -47,31 +47,45 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+    let first = req.body.first;
+    let last = req.body.last;
+    let email = req.body.email;
     let password = req.body.password;
-    // we grab user input, hash what they provided as a password and store this info in database
-    //instead of passwordMagic, grab what user provided as potential PW
-    hash(password)
-        .then((hashedPw) => {
-            console.log("hashedPw in /register: ", hashedPw);
-            res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
-        })
-        .catch((err) => console.log(err));
+
+    if (first != "" && last != "" && email != "" && password != "") {
+        // we grab user input, hash what they provided as a password and store this info in database
+        //instead of passwordMagic, grab what user provided as potential PW
+        hash(password)
+            .then((hashedPw) => {
+                console.log("hashedPw in /register: ", hashedPw);
+                res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
+            })
+            .catch((err) => console.log(err));
+    } else {
+        res.render("register", { error: true });
+    }
 });
 
 app.post("/login", (req, res) => {
-    //in our login, we use compare!
-    //we take the users provided password and compare it to what we have stored as a hash in our db
-    let hashedPw =
-        "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab the user's stored hash from db and use that as compare value identifying it via the email
-    compare("passwordMagic", hashedPw)
-        .then((matchValue) => {
-            console.log(matchValue);
-            //depending on whether true or false, log user in or render login with error msg
-            // if matchValue is true, store the user id in the cookie req.session.userId
-            //if matchValue is false, rerender login with error msg
-            res.sendStatus(200); // redirect to /petition or /thanks, depending on data flow
-        })
-        .catch((err) => console.log(err));
+    let email = req.body.email;
+    let password = req.body.password;
+    if (email != "" && password != "") {
+        //in our login, we use compare!
+        //we take the users provided password and compare it to what we have stored as a hash in our db
+        let hashedPw =
+            "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab the user's stored hash from db and use that as compare value identifying it via the email
+        compare("passwordMagic", hashedPw)
+            .then((matchValue) => {
+                console.log(matchValue);
+                //depending on whether true or false, log user in or render login with error msg
+                // if matchValue is true, store the user id in the cookie req.session.userId
+                //if matchValue is false, rerender login with error msg
+                res.sendStatus(200); // redirect to /petition or /thanks, depending on data flow
+            })
+            .catch((err) => console.log(err));
+    } else {
+        res.render("login", { error: true });
+    }
 });
 
 app.get("/petition", (req, res) => {
