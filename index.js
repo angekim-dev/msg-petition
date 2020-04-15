@@ -3,6 +3,8 @@ const app = express();
 const db = require("./db");
 const hb = require("express-handlebars");
 const cookieSession = require("cookie-session");
+const csurf = require("csurf");
+const { hash, compare } = require("./bc");
 
 // console.log("db: ", db);
 
@@ -25,9 +27,48 @@ app.use(
     })
 );
 
+app.use(csurf());
+app.use((req, res, next) => {
+    res.set("X-Frame-Options", "deny");
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
     res.redirect("/petition");
+});
+app.get("/register", (req, res) => {});
+
+app.get("/login", (req, res) => {
+    res.render("login", {});
+});
+
+app.post("/register", (req, res) => {
+    // we grab user input, hash what they provided as a password and store this info in database
+    //instead of passwordMagic, grab what user provided as potential PW
+    hash("passwordMagic")
+        .then((hashedPw) => {
+            console.log(hashedPw);
+            res.sendStatus(200); //here direct to /petition INSTEAD OF 200
+        })
+        .catch((err) => console.log(err));
+});
+
+app.post("/login", (req, res) => {
+    //in our login, we use compare!
+    //we take the users provided password and compare it to what we have stored as a hash in our db
+    let hashedPw =
+        "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab teh user's stored hash from db and use that as compare value identifying it via the email
+    compare("passwordMagic", hashedPw)
+        .then((matchValue) => {
+            console.log(matchValue);
+            //depending on whether true or false, log user in or render login with error msg
+            // if matchValue is true, store the user id in the cookie req.session.userId
+            //if matchValue is false, rerender login with error msg
+            res.sendStatus(200); // redirect to /petition or /thanks, depending on data flow
+        })
+        .catch((err) => console.log(err));
 });
 
 app.get("/petition", (req, res) => {
