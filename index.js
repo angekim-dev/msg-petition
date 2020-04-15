@@ -36,21 +36,24 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
-    res.redirect("/petition");
+    res.redirect("/register");
 });
-app.get("/register", (req, res) => {});
+app.get("/register", (req, res) => {
+    res.render("register", {});
+});
 
 app.get("/login", (req, res) => {
     res.render("login", {});
 });
 
 app.post("/register", (req, res) => {
+    let password = req.body.password;
     // we grab user input, hash what they provided as a password and store this info in database
     //instead of passwordMagic, grab what user provided as potential PW
-    hash("passwordMagic")
+    hash(password)
         .then((hashedPw) => {
-            console.log(hashedPw);
-            res.sendStatus(200); //here direct to /petition INSTEAD OF 200
+            console.log("hashedPw in /register: ", hashedPw);
+            res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
         })
         .catch((err) => console.log(err));
 });
@@ -59,7 +62,7 @@ app.post("/login", (req, res) => {
     //in our login, we use compare!
     //we take the users provided password and compare it to what we have stored as a hash in our db
     let hashedPw =
-        "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab teh user's stored hash from db and use that as compare value identifying it via the email
+        "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab the user's stored hash from db and use that as compare value identifying it via the email
     compare("passwordMagic", hashedPw)
         .then((matchValue) => {
             console.log(matchValue);
