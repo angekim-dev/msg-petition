@@ -11,15 +11,15 @@ module.exports.hash = (plainTxtPw) =>
     genSalt().then((salt) => hash(plainTxtPw, salt));
 
 //////// EXAMPLE FROM IN CLASS ///////
-genSalt()
-    .then((salt) => {
-        // console.log(salt);
-        return hash("superSafePassword", salt);
-    })
-    .then((hashedPassword) => {
-        console.log("hashed and salted PW: ", hashedPassword); //returns properly hashed PW
-        return compare("superSafePassword", hashedPassword);
-    })
-    .then((matchValueOfCompare) => {
-        console.log("matchValueOfCompare: ", matchValueOfCompare);
-    });
+// genSalt()
+//     .then((salt) => {
+//         // console.log(salt);
+//         return hash("superSafePassword", salt);
+//     })
+//     .then((hashedPassword) => {
+//         console.log("hashed and salted PW: ", hashedPassword); //returns properly hashed PW
+//         return compare("superSafePassword", hashedPassword);
+//     })
+//     .then((matchValueOfCompare) => {
+//         console.log("matchValueOfCompare: ", matchValueOfCompare);
+//     });

@@ -11,9 +11,6 @@ const { hash, compare } = require("./bc");
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-// DON'T FORGET TO serve public folder
-app.use(express.static("./public"));
-
 app.use(
     express.urlencoded({
         extended: false,
@@ -34,16 +31,17 @@ app.use((req, res, next) => {
     next();
 });
 
+// DON'T FORGET TO serve public folder
+app.use(express.static("./public"));
+
+///ROUTES///
+
 app.get("/", (req, res) => {
     console.log("get request to / route happened!");
     res.redirect("/register");
 });
 app.get("/register", (req, res) => {
-    res.render("register", {});
-});
-
-app.get("/login", (req, res) => {
-    res.render("login", {});
+    res.render("register");
 });
 
 app.post("/register", (req, res) => {
@@ -54,23 +52,29 @@ app.post("/register", (req, res) => {
 
     if (first != "" && last != "" && email != "" && password != "") {
         // we grab user input, hash what they provided as a password and store this info in database
-        //instead of passwordMagic, grab what user provided as potential PW
         hash(password)
             .then((hashedPw) => {
                 console.log("hashedPw in /register: ", hashedPw);
-                db.addRegistration(first, last, email, hashedPw).then(
-                    (result) => {
-                        console.log(result);
+                return db
+                    .addRegistration(first, last, email, hashedPw)
+                    .then((result) => {
+                        console.log("result in addRegistration: ", result);
                         req.session.userId = result.rows[0].id;
                         console.log("got your registration");
                         res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
-                    }
-                );
+                    });
             })
-            .catch((err) => console.log("Error in addRegistration: ", err));
+            .catch((err) => {
+                console.log("Error in addRegistration: ", err);
+                res.render("register", { error: true });
+            });
     } else {
         res.render("register", { error: true });
     }
+});
+
+app.get("/login", (req, res) => {
+    res.render("login");
 });
 
 app.post("/login", (req, res) => {
@@ -79,17 +83,28 @@ app.post("/login", (req, res) => {
     if (email != "" && password != "") {
         //in our login, we use compare!
         //we take the users provided password and compare it to what we have stored as a hash in our db
-        let hashedPw =
-            "$2a$10$VJC6VI0OeC.a48uJCUkSpug5hSllfsjuiuC3SmFi7x2OTjiGx2TjK"; // grab the user's stored hash from db and use that as compare value identifying it via the email
-        compare("passwordMagic", hashedPw)
+        db.getUserInfo(email)
+            .then((result) => {
+                let hashedPw = result.rows[0].password;
+                return hashedPw;
+            }) // grab the user's stored hash from db and use that as compare value identifying it via the email
+            .then((hashedPw) => {
+                return compare(password, hashedPw);
+            })
             .then((matchValue) => {
-                console.log(matchValue);
+                console.log("matchValue :", matchValue);
                 //depending on whether true or false, log user in or render login with error msg
                 // if matchValue is true, store the user id in the cookie req.session.userId
                 //if matchValue is false, rerender login with error msg
-                res.sendStatus(200); // redirect to /petition or /thanks, depending on data flow
             })
-            .catch((err) => console.log(err));
+            .then((result) => {
+                req.session.userId = result.rows[0].id;
+                res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
+            })
+            .catch((err) => {
+                console.log("Error in getUserInfo: ", err);
+                res.render("login", { error: true });
+            });
     } else {
         res.render("login", { error: true });
     }
@@ -108,15 +123,15 @@ app.post("/petition", (req, res) => {
     let signature = req.body.signature;
 
     if (signature != "") {
-        db.addFirstLast(signature)
+        db.addSignature(signature, user_id)
             .then((result) => {
-                console.log(result);
+                console.log("Result of addSignature", result);
                 req.session.signatureId = result.rows[0].id;
                 console.log("got your details");
                 res.redirect("/thanks");
             })
             .catch((err) => {
-                console.log("Error in addFirstLast:", err);
+                console.log("Error in addSignature:", err);
             });
     } else {
         res.render("petition", { error: true });
@@ -139,7 +154,7 @@ app.get("/thanks", (req, res) => {
             });
         db.getSignature(signatureId)
             .then((results) => {
-                console.log(results);
+                console.log("Results of getSignature: ", results);
                 res.render("thanks", {
                     signaturePicture: results,
                     numberOfSignatures: numbers,
@@ -164,8 +179,8 @@ app.get("/signers", (req, res) => {
                         results.rows[i].first + " " + results.rows[i].last;
                     namesArray.push(fullName);
                 }
-                console.log(results.rows);
-                console.log(namesArray);
+                console.log("Results.rows in getFirstLast: ", results.rows);
+                console.log("NamesArray: ", namesArray);
 
                 res.render("signers", { listOfNames: namesArray });
             })
