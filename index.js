@@ -42,7 +42,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-    res.render("register");
+    const { user } = req.session;
+    if (user) {
+        res.redirect("/petition");
+    } else {
+        res.render("register");
+    }
 });
 
 app.post("/register", (req, res) => {
@@ -59,9 +64,16 @@ app.post("/register", (req, res) => {
                 return db
                     .addRegistration(first, last, email, hashedPw)
                     .then((result) => {
+                        // USER ID as cookie
                         console.log("result in addRegistration: ", result);
-                        req.session.id = result.rows[0].id;
-                        console.log(req.session.id);
+                        req.session.user = {
+                            firstName: first,
+                            lastName: last,
+                            userId: result.rows[0].id,
+                        };
+                        console.log(
+                            `${req.session.user.firstName} ${req.session.user.lastName} has the ID: ${req.session.user.userId}`
+                        );
                         console.log("got your registration");
                         res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
                     });
@@ -76,68 +88,71 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login");
+    const { user } = req.session;
+    if (user) {
+        res.redirect("/petition");
+    } else {
+        res.render("login");
+    }
 });
 
 app.post("/login", (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
-    let id;
+    // console.log("***id***", id);
     const { user } = req.session;
-    if (email != "" && password != "") {
-        //in our login, we use compare!
-        //we take the users provided password and compare it to what we have stored as a hash in our db
-        db.getUserInfo(email)
-            .then((result) => {
-                let hashedPw = result.rows[0].password;
-                return hashedPw;
-            }) // grab the user's stored hash from db and use that as compare value identifying it via the email
-            .then((hashedPw) => {
-                return compare(password, hashedPw);
-            })
-            .then((matchValue) => {
-                console.log("matchValue :", matchValue);
-                //depending on whether true or false, log user in or render login with error msg
-                // if matchValue is true, store the user id in the cookie req.session.userId
-                //if matchValue is false, rerender login with error msg
-                if (matchValue == true) {
-                    user.userId = id;
-                    res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
-                } else if (matchValue != true) {
-                    res.render("login", { error: true });
-                }
-            })
-            // .then((result) => {
-            //     req.session.userId = result.rows[0].id;
-            // })
-            .catch((err) => {
-                console.log("Error in getUserInfo: ", err);
-                // res.render("login", { error: true });
+    //in our login, we use compare!
+    //we take the users provided password and compare it to what we have stored as a hash in our db
+    let id;
+    db.getUserInfo(email)
+        .then((result) => {
+            let hashedPw = result.rows[0].password;
+            id = result.rows[0].id;
+            return hashedPw;
+        })
+        .then((hashedPw) => {
+            return compare(password, hashedPw);
+        })
+        .then((matchValue) => {
+            console.log("matchValue :", matchValue);
+            if (matchValue == true) {
+                user.userId = id;
+                res.redirect("/petition"); // redirect to /petition or /thanks, depending on data flow
+            } else if (matchValue != true) {
+                res.render("login", {
+                    error: true,
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("Error in getUserInfo: ", err);
+            res.render("login", {
+                error: true,
             });
-    } else {
-        res.render("login", { error: true });
-    }
+        });
 });
 
 app.get("/petition", (req, res) => {
-    // const { user } = req.session;
-    // // let signature_id = user.signatureId;
-    // if (!user) {
-    res.render("petition");
-    // } else {
-    //     res.redirect("/thanks");
-    // }
+    const { user } = req.session;
+    if (user.signatureId) {
+        res.redirect("/thanks");
+    } else {
+        res.render("petition");
+    }
 });
 
 app.post("/petition", (req, res) => {
     let signature = req.body.signature;
-    const { user } = req.session;
-    let user_id;
+    // console.log("***", signature);
+    // console.log("user", user);
+    let { user } = req.session;
+    // const user_id = req.session.user_id;
+    // console.log("******", req.session);
     if (signature != "") {
-        db.addSignature(signature, user_id)
+        db.addSignature(signature, user.userId)
             .then((result) => {
                 console.log("Result of addSignature", result);
-                user.id = result.rows[0].id;
+                user.signatureId = result.rows[0].id;
                 console.log("got your details");
                 res.redirect("/thanks");
             })
@@ -167,6 +182,8 @@ app.get("/thanks", (req, res) => {
             .then((results) => {
                 console.log("Results of getSignature: ", results);
                 res.render("thanks", {
+                    first: user.firstName,
+                    last: user.lastName,
                     signaturePicture: results,
                     numberOfSignatures: numbers,
                 });
@@ -180,11 +197,11 @@ app.get("/thanks", (req, res) => {
 //SIGNERS BROKEN FOR NOW//
 
 app.get("/signers", (req, res) => {
-    const { id } = req.session;
-    if (!id) {
+    const { user } = req.session;
+    if (!user) {
         res.redirect("/petition");
     } else {
-        db.getFirstLast()
+        db.getSupportersDetails()
             .then((results) => {
                 let namesArray = [];
                 for (let i = 0; i < results.rows.length; i++) {

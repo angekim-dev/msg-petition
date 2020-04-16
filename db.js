@@ -20,7 +20,7 @@ module.exports.addRegistration = (first, last, email, password) => {
 };
 
 //SELECT to get first & last of everyone who signed
-module.exports.getFirstLast = () => {
+module.exports.getSupportersDetails = () => {
     return db.query(`SELECT first, last FROM users`);
     // .then((results) => {
     //     return results.rows;
@@ -41,12 +41,12 @@ module.exports.totalSigners = () => {
 
 module.exports.getSignature = (id) => {
     return db
-        .query(`SELECT signature FROM signatures WHERE id = '${id}';`)
+        .query(`SELECT signature FROM signatures WHERE id=$1;`, [id])
         .then((result) => {
             return result.rows[0].signature;
         });
 };
 
 module.exports.getUserInfo = (email) => {
-    return db.query(`SELECT * FROM users WHERE email = '${email}';`);
+    return db.query(`SELECT * FROM users WHERE email = '$1';`, [email]);
 };
