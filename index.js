@@ -60,7 +60,8 @@ app.post("/register", (req, res) => {
                     .addRegistration(first, last, email, hashedPw)
                     .then((result) => {
                         console.log("result in addRegistration: ", result);
-                        req.session.userId = result.rows[0].id;
+                        req.session.id = result.rows[0].id;
+                        console.log(req.session.id);
                         console.log("got your registration");
                         res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
                     });
@@ -119,24 +120,24 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    const { user } = req.session;
-    // let signature_id = user.signatureId;
-    if (!user) {
-        res.render("petition");
-    } else {
-        res.redirect("/thanks");
-    }
+    // const { user } = req.session;
+    // // let signature_id = user.signatureId;
+    // if (!user) {
+    res.render("petition");
+    // } else {
+    //     res.redirect("/thanks");
+    // }
 });
 
 app.post("/petition", (req, res) => {
     let signature = req.body.signature;
     const { user } = req.session;
-    let user_id = user.userId;
+    let user_id;
     if (signature != "") {
         db.addSignature(signature, user_id)
             .then((result) => {
                 console.log("Result of addSignature", result);
-                user.signatureId = result.rows[0].id;
+                user.id = result.rows[0].id;
                 console.log("got your details");
                 res.redirect("/thanks");
             })
