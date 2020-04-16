@@ -21,7 +21,7 @@ module.exports.addRegistration = (first, last, email, password) => {
 
 //SELECT to get first & last of everyone who signed
 module.exports.getFirstLast = () => {
-    return db.query(`SELECT first, last FROM signatures`);
+    return db.query(`SELECT first, last FROM users`);
     // .then((results) => {
     //     return results.rows;
     // })

@@ -81,6 +81,8 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
+    let id;
+    const { user } = req.session;
     if (email != "" && password != "") {
         //in our login, we use compare!
         //we take the users provided password and compare it to what we have stored as a hash in our db
@@ -97,14 +99,19 @@ app.post("/login", (req, res) => {
                 //depending on whether true or false, log user in or render login with error msg
                 // if matchValue is true, store the user id in the cookie req.session.userId
                 //if matchValue is false, rerender login with error msg
+                if (matchValue == true) {
+                    user.userId = id;
+                    res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
+                } else if (matchValue != true) {
+                    res.render("login", { error: true });
+                }
             })
-            .then((result) => {
-                req.session.userId = result.rows[0].id;
-                res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
-            })
+            // .then((result) => {
+            //     req.session.userId = result.rows[0].id;
+            // })
             .catch((err) => {
                 console.log("Error in getUserInfo: ", err);
-                res.render("login", { error: true });
+                // res.render("login", { error: true });
             });
     } else {
         res.render("login", { error: true });
@@ -114,7 +121,7 @@ app.post("/login", (req, res) => {
 app.get("/petition", (req, res) => {
     const { user } = req.session;
     // let signature_id = user.signatureId;
-    if (!user.signatureId) {
+    if (!user) {
         res.render("petition");
     } else {
         res.redirect("/thanks");
