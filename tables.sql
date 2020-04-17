@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS signatures;
-DROP TABLE IF EXISTS user_profiles CASCADE;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user_profiles CASCADE;
 
 CREATE TABLE signatures (
     id SERIAL PRIMARY KEY,

@@ -221,6 +221,11 @@ app.get("/signers", (req, res) => {
                 console.log("Error in getFirstLast: ", err);
             });
     }
+
+    app.get("/logout", (req, res) => {
+        req.session = null;
+        res.redirect("/login");
+    });
 });
 
 app.listen(process.env.PORT || 8080, () =>
