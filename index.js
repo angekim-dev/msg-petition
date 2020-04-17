@@ -223,4 +223,7 @@ app.get("/signers", (req, res) => {
     }
 });
 
-app.listen(8080, () => console.log("petition server is listening!"));
+app.listen(process.env.PORT || 8080, () =>
+    console.log("petition server is listening!")
+);
+// env stands for environment
