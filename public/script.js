@@ -16,17 +16,20 @@
 
     canvas.addEventListener("mousedown", (e) => {
         //     console.log("mousedown happened");
-        x = e.clientX - offset.left;
-        y = e.clientY - offset.top;
+        x = e.pageX - e.target.offsetLeft;
+        y = e.pageY - e.target.offsetTop;
         drawing = true;
         canCtx.moveTo(x, y);
     });
 
     canvas.addEventListener("mousemove", (e) => {
         if (drawing === true) {
-            x = e.clientX - offset.left;
-            y = e.clientY - offset.top;
+            console.log("drawing****");
+            x = e.pageX - e.target.offsetLeft;
+            y = e.pageY - e.target.offsetTop;
+            console.log("XANDY", x, y);
             canCtx.lineTo(x, y);
+            canCtx.strokeStyle = "hotpink";
             canCtx.stroke();
             dataURL = canvas.toDataURL();
             box.value = dataURL;
@@ -36,8 +39,8 @@
 
     window.addEventListener("mouseup", () => {
         if (drawing === true) {
-            x = 0;
-            y = 0;
+            // x = 0;
+            // y = 0;
             drawing = false;
         }
         // console.log(dataURL);
