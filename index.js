@@ -124,13 +124,32 @@ app.post("/login", (req, res) => {
             if (matchValue == true) {
                 req.session.user.userId = id;
                 console.log("***JUST ASSIGNED IT****", req.session.user.userId);
-                res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
+                // res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
+                return req.session.user.userId;
             } else if (matchValue != true) {
                 res.render("login", {
                     error: true,
                 });
             }
         })
+        // .then((userId) => {
+        //     //checking for signature with userID part 4
+        //     console.log("***137", userId);
+        //     console.log("****138", req.session.signatureId);
+        //     db.getSignature(userId)
+        //         .then((signatureId) => {
+        //             if (signatureId.rows[0].id) {
+        //                 req.session.user.signatureId =
+        //                     req.session.signatureId.rows[0].id;
+        //                 res.redirect("/thanks");
+        //             } else {
+        //                 res.redirect("/petition");
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             console.log("Error in getSignature POST /login: ", err);
+        //         });
+        // })
         .catch((err) => {
             console.log("Error in getUserInfo: ", err);
             res.render("login", {
@@ -225,8 +244,6 @@ app.post("/profile", (req, res) => {
         });
 });
 
-//SIGNERS BROKEN FOR NOW//
-
 app.get("/signers", (req, res) => {
     const { user } = req.session;
     console.log("***232", user);
@@ -250,19 +267,24 @@ app.get("/signers", (req, res) => {
         } else {
             res.redirect("/register");
         }
-        // db.getSupportersDetails()
-        //     .then((results) => {
-        //         let namesArray = [];
-        //         for (let i = 0; i < results.rows.length; i++) {
-        //             let fullName =
-        //                 results.rows[i].first + " " + results.rows[i].last;
-        //             namesArray.push(fullName);
-        //         }
-        //         console.log("Results.rows in getFirstLast: ", results.rows);
-        //         console.log("NamesArray: ", namesArray);
+    }
+});
 
-        //         res.render("signers", { listOfNames: namesArray });
-        //     })
+app.get("/signers/:city", (req, res) => {
+    if (req.session) {
+        const city = req.params.city;
+        db.getCity(city)
+            .then((result) => {
+                return result.rows;
+            })
+            .then((results) => {
+                res.render("city", { city: city, citizens: results });
+            })
+            .catch((err) => {
+                console.log("Error in getCity: ", err);
+            });
+    } else {
+        res.redirect("/register");
     }
 });
 

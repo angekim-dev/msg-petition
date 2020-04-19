@@ -1,0 +1,11 @@
+<h1>Cool friends from your city {{city}}.</h1>
+<div>
+    {{#citizens}}
+    <p>{{#if url}}
+        <a href="{{url}}">{{/if}}
+            {{first}} {{last}}
+            {{#if url}}</a>{{/if}}
+            {{#if age}}, {{age}}{{/if}}
+    </p>
+    {{/citizens}}
+</div>

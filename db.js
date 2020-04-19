@@ -43,6 +43,19 @@ module.exports.getSupportersDetails = () => {
     //     console.log("Error in getFirstLast", err);
     // });
 };
+
+module.exports.getCity = (city) => {
+    return db.query(
+        `SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS user_url FROM users
+    JOIN user_profiles
+    ON users.id = user_profiles.user_id
+    JOIN signatures
+    ON user_profiles.user_id = signatures.user_id
+    WHERE LOWER(user_profiles.city) = LOWER($1);`,
+        [city]
+    );
+};
+
 //SELECT to get total numbers of signers *count* by postgres
 module.exports.totalSigners = () => {
     return db.query(`SELECT COUNT(*) FROM signatures`).then((results) => {

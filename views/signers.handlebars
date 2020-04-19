@@ -11,6 +11,6 @@
     {{/listOfNames}}
 </div> --}}
 {{#signers}}
-<div>{{first}} {{last}} {{age}} {{city}}</div>
+<div><p>{{#if this.url}}<a href="{{url}}">{{/if}}{{first}} {{last}}{{#if this.url}}</a>{{/if}}{{#if this.age}}, {{age}}{{/if}}{{#if this.city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}</p></div>
 {{/signers}}
 {{!-- loop through array and render each one --}}
