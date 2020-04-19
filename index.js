@@ -61,7 +61,7 @@ app.post("/register", (req, res) => {
         // we grab user input, hash what they provided as a password and store this info in database
         hash(password)
             .then((hashedPw) => {
-                console.log("hashedPw in /register: ", hashedPw);
+                // console.log("hashedPw in /register: ", hashedPw);
                 return db
                     .addRegistration(first, last, email, hashedPw)
                     .then((result) => {
@@ -120,7 +120,7 @@ app.post("/login", (req, res) => {
             if (matchValue == true) {
                 req.session.user.userId = id;
                 console.log("***JUST ASSIGNED IT****", req.session.user.userId);
-                res.redirect("/petition"); // redirect to /petition or /thanks, depending on data flow
+                res.redirect("/thanks"); // redirect to /petition or /thanks, depending on data flow
             } else if (matchValue != true) {
                 res.render("login", {
                     error: true,
@@ -136,8 +136,11 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    // const { user } = req.session;
     if (req.session.signatureId) {
+        console.log(
+            "***141*** req.session.signatureId",
+            req.session.signatureId
+        );
         res.redirect("/thanks");
     } else {
         res.render("petition");
@@ -147,13 +150,14 @@ app.get("/petition", (req, res) => {
 app.post("/petition", (req, res) => {
     let signature = req.body.signature;
     console.log("***IN POST petition***", req.session.user.userId);
+    // req.session.user = {};
     // console.log("***", signature);
     // const user_id = req.session.user_id;
     // console.log("******", req.session);
     if (signature != "") {
         db.addSignature(signature, req.session.user.userId)
             .then((result) => {
-                console.log("Result of addSignature", result);
+                // console.log("Result of addSignature", result);
                 req.session.signatureId = result.rows[0].id;
 
                 console.log("got your details");
@@ -168,12 +172,12 @@ app.post("/petition", (req, res) => {
 });
 
 app.get("/thanks", (req, res) => {
-    // const { user } = req.session;
+    console.log("***174 req.session.signatureId", req.session.signatureId);
     let numbers;
     if (!req.session.signatureId) {
         res.redirect("/petition");
     } else {
-        console.log("agreed to cookies");
+        console.log("line 180 agreed to cookies");
         db.totalSigners()
             .then((result) => {
                 numbers = result;
@@ -183,7 +187,7 @@ app.get("/thanks", (req, res) => {
             });
         db.getSignature(req.session.signatureId)
             .then((results) => {
-                console.log("Results of getSignature: ", results);
+                // console.log("Results of getSignature: ", results);
                 res.render("thanks", {
                     first: req.session.firstName,
                     last: req.session.lastName,

@@ -51,5 +51,5 @@ module.exports.getSignature = (id) => {
 };
 
 module.exports.getUserInfo = (email) => {
-    return db.query(`SELECT * FROM users WHERE email = '${email}';`);
+    return db.query(`SELECT * FROM users WHERE email = $1;`, [email]);
 };

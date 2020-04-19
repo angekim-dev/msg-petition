@@ -11,8 +11,8 @@ article {
 }
 body {
     font-family: "Courier New", Courier, monospace;
-    /* background-image: url(./succulent.jpg);
-    overflow: hidden; */
+    background-image: url(./succulent.jpg);
+    overflow: hidden;
 }
 button {
     padding: 5px;
@@ -36,7 +36,7 @@ h2 {
 #canvas {
     border: dotted black;
     /* color: red; */
-    /* background-color: whitesmoke; */
+    background-color: whitesmoke;
 }
 #listOfNames {
     padding: 10px;
