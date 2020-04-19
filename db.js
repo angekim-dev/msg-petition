@@ -22,6 +22,13 @@ module.exports.addRegistration = (first, last, email, password) => {
     );
 };
 
+module.exports.addProfile = (age, city, url, user_id) => {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4);`,
+        [age || null, city, url, user_id]
+    );
+};
+
 //SELECT to get first & last of everyone who signed
 module.exports.getSupportersDetails = () => {
     return db.query(`SELECT first, last FROM users`);

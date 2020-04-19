@@ -42,9 +42,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-    const { user } = req.session;
-    if (user) {
-        res.redirect("/petition");
+    if (req.session.signatureId) {
+        console.log(
+            "***47*** req.session.signatureId",
+            req.session.signatureId
+        );
+        res.redirect("/thanks");
     } else {
         res.render("register");
     }
@@ -76,7 +79,7 @@ app.post("/register", (req, res) => {
                             `${req.session.user.firstName} ${req.session.user.lastName} has the ID: ${req.session.user.userId}`
                         );
                         console.log("got your registration");
-                        res.redirect("/petition"); //here redirect to /petition INSTEAD OF 200
+                        res.redirect("/profile");
                     });
             })
             .catch((err) => {
@@ -91,6 +94,7 @@ app.post("/register", (req, res) => {
 app.get("/login", (req, res) => {
     const { user } = req.session;
     if (user) {
+        console.log("***USER***", user);
         res.redirect("/petition");
     } else {
         res.render("login");
@@ -199,6 +203,26 @@ app.get("/thanks", (req, res) => {
                 console.log("Error in getSignature: ", err);
             });
     }
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile");
+});
+
+app.post("/profile", (req, res) => {
+    let age = req.body.age;
+    let city = req.body.city;
+    let url = req.body.url;
+    let userId = req.session.user.userId;
+    // console.log("*****217*userId", userId);
+    db.addProfile(age, city, url, userId)
+        .then(() => {
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("Error in addRegistration: ", err);
+            res.render("profile", { error: true });
+        });
 });
 
 //SIGNERS BROKEN FOR NOW//
