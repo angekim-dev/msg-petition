@@ -234,14 +234,19 @@ app.post("/profile", (req, res) => {
     let url = req.body.url;
     let userId = req.session.user.userId;
     // console.log("*****217*userId", userId);
-    db.addProfile(age, city, url, userId)
-        .then(() => {
-            res.redirect("/petition");
-        })
-        .catch((err) => {
-            console.log("Error in addRegistration: ", err);
-            res.render("profile", { error: true });
-        });
+    if (url.startsWith("http")) {
+        db.addProfile(age, city, url, userId)
+            .then(() => {
+                res.redirect("/petition");
+            })
+            .catch((err) => {
+                console.log("Error in addRegistration: ", err);
+                res.render("profile", { error: true });
+            });
+    } else {
+        console.log("url NOT ok POST /profile", url);
+        res.render("profile", { error: true });
+    }
 });
 
 app.get("/signers", (req, res) => {
