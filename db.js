@@ -31,7 +31,11 @@ module.exports.addProfile = (age, city, url, user_id) => {
 
 //SELECT to get first & last of everyone who signed
 module.exports.getSupportersDetails = () => {
-    return db.query(`SELECT first, last FROM users`);
+    return db.query(`SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url FROM users
+    LEFT JOIN user_profiles
+    ON users.id = user_profiles.user_id
+    JOIN signatures
+    ON user_profiles.user_id = signatures.user_id;`);
     // .then((results) => {
     //     return results.rows;
     // })

@@ -176,7 +176,7 @@ app.post("/petition", (req, res) => {
 });
 
 app.get("/thanks", (req, res) => {
-    console.log("***174 req.session.signatureId", req.session.signatureId);
+    console.log("***179 req.session.signatureId", req.session.signatureId);
     let numbers;
     if (!req.session.signatureId) {
         res.redirect("/petition");
@@ -229,31 +229,46 @@ app.post("/profile", (req, res) => {
 
 app.get("/signers", (req, res) => {
     const { user } = req.session;
+    console.log("***232", user);
+    console.log("***233**", req.session.signatureId);
     if (!user) {
         res.redirect("/petition");
     } else {
-        db.getSupportersDetails()
-            .then((results) => {
-                let namesArray = [];
-                for (let i = 0; i < results.rows.length; i++) {
-                    let fullName =
-                        results.rows[i].first + " " + results.rows[i].last;
-                    namesArray.push(fullName);
-                }
-                console.log("Results.rows in getFirstLast: ", results.rows);
-                console.log("NamesArray: ", namesArray);
+        if (req.session.signatureId) {
+            db.getSupportersDetails()
+                .then((result) => {
+                    return result.rows;
+                })
+                .then((result) => {
+                    res.render("signers", {
+                        signers: result,
+                    });
+                })
+                .catch((err) => {
+                    console.log("Error in getSupportersDetails: ", err);
+                });
+        } else {
+            res.redirect("/register");
+        }
+        // db.getSupportersDetails()
+        //     .then((results) => {
+        //         let namesArray = [];
+        //         for (let i = 0; i < results.rows.length; i++) {
+        //             let fullName =
+        //                 results.rows[i].first + " " + results.rows[i].last;
+        //             namesArray.push(fullName);
+        //         }
+        //         console.log("Results.rows in getFirstLast: ", results.rows);
+        //         console.log("NamesArray: ", namesArray);
 
-                res.render("signers", { listOfNames: namesArray });
-            })
-            .catch((err) => {
-                console.log("Error in getFirstLast: ", err);
-            });
+        //         res.render("signers", { listOfNames: namesArray });
+        //     })
     }
+});
 
-    app.get("/logout", (req, res) => {
-        req.session = null;
-        res.redirect("/login");
-    });
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/login");
 });
 
 app.listen(process.env.PORT || 8080, () =>
