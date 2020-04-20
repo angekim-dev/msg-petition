@@ -97,6 +97,7 @@ app.get("/login", (req, res) => {
         console.log("***USER***", user);
         res.redirect("/thanks");
     } else {
+        console.log("**rendering login in get/login");
         res.render("login");
     }
 });
@@ -135,13 +136,13 @@ app.post("/login", (req, res) => {
         })
         .then((userId) => {
             //checking for signature with userID part 4
-            console.log("***138", userId);
-            console.log("****139", req.session.signatureId);
+            // req.session.user = {};
+            console.log("***140", userId);
             db.checkSignature(userId)
-                .then((signatureId) => {
-                    if (signatureId.rows[0].id) {
-                        req.session.user.signatureId =
-                            req.session.signatureId.rows[0].id;
+                .then((results) => {
+                    if (results.rows[0].id) {
+                        req.session.signatureId = results.rows[0].id;
+                        console.log("***146", results.rows[0].id);
                         res.redirect("/thanks");
                     } else {
                         res.redirect("/petition");
@@ -149,6 +150,7 @@ app.post("/login", (req, res) => {
                 })
                 .catch((err) => {
                     console.log("Error in checkSignature POST /login: ", err);
+                    res.redirect("/petition");
                 });
         })
         .catch((err) => {
@@ -251,6 +253,10 @@ app.post("/profile", (req, res) => {
 });
 
 app.get("/profile/edit", (req, res) => {
+    const { user } = req.session;
+    db.getSupportersDetails(user.userId).then((result) => {
+        console.log("result of getSupporterDetails with user.userId", result);
+    });
     res.render("edit");
 });
 
@@ -272,6 +278,7 @@ app.post("/profile/edit", (req, res) => {
                     hashedPw,
                     req.session.user.userId
                 ),
+                db.upsertProfile(),
                 // TO DO db. ON CONFLICT stuff
             ]);
         });
@@ -280,10 +287,13 @@ app.post("/profile/edit", (req, res) => {
 
 app.get("/signers", (req, res) => {
     const { user } = req.session;
-    console.log("***232", user);
-    console.log("***233**", req.session.signatureId);
+    console.log("user in GET signers", user);
+    console.log(
+        "req.session.signatureId in GET signers",
+        req.session.signatureId
+    );
     if (!user) {
-        res.redirect("/petition");
+        res.redirect("/register");
     } else {
         if (req.session.signatureId) {
             db.getSupportersDetails()
