@@ -2,6 +2,7 @@
 {{#if error}}
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
+<div>
 <form method="POST">
     <input name="first" type="text" autocomplete="off" value={{first}}>
     <input name="last" type="text" autocomplete="off" value={{last}}>
@@ -13,3 +14,4 @@
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>UPDATE</button>
 </form>
+</div>

@@ -254,22 +254,30 @@ app.post("/profile", (req, res) => {
 
 app.get("/profile/edit", (req, res) => {
     const { user } = req.session;
-    db.getSupportersDetails(user.userId).then((result) => {
-        console.log("****258", user.userId);
-        console.log(
-            "result.rows of getSupporterDetails with user.userId",
-            result.rows
-        );
-        let supDet = result.rows;
-        res.render("edit", {
-            first: supDet[0].first,
-            last: supDet[0].last,
-            email: supDet[0].email,
-            age: supDet[0].age,
-            city: supDet[0].city,
-            url: supDet[0].url,
-        });
-    });
+    if (!user) {
+        res.redirect("/register");
+    } else {
+        db.getSupportersDetails(user.userId)
+            .then((result) => {
+                console.log("****258", user.userId);
+                console.log(
+                    "result.rows of getSupporterDetails with user.userId",
+                    result.rows
+                );
+                let supDet = result.rows;
+                res.render("edit", {
+                    first: supDet[0].first,
+                    last: supDet[0].last,
+                    email: supDet[0].email,
+                    age: supDet[0].age,
+                    city: supDet[0].city,
+                    url: supDet[0].url,
+                });
+            })
+            .catch((err) => {
+                console.log("GET edit catch:", err);
+            });
+    }
 });
 
 app.post("/profile/edit", (req, res) => {
@@ -281,13 +289,87 @@ app.post("/profile/edit", (req, res) => {
     let last = req.body.last;
     let email = req.body.email;
     let password = req.body.password;
-    if (password != "") {
+    if (url != "" && !url.startsWith("http")) {
+        db.getSupWithEmail(user.userId)
+            .then((result) => {
+                let supDet = result.rows;
+                res.render("edit", {
+                    first: supDet[0].first,
+                    last: supDet[0].last,
+                    email: supDet[0].email,
+                    age: supDet[0].age,
+                    city: supDet[0].city,
+                    url: supDet[0].url,
+                    error: true,
+                });
+            })
+            .catch((err) => {
+                console.log("POST edit catch in getSupWithEmail:", err);
+            });
+    } else if (password != "") {
         hash(password).then((hashedPw) => {
             Promise.all([
                 db.makeChanges(first, last, email, hashedPw, user.userId),
                 db.upsertProfile(age, city, url, user.userId),
-            ]);
+            ])
+                .then(() => {
+                    res.redirect("/thanks");
+                })
+                .catch((err) => {
+                    console.log("POST edit catch after update:", err);
+                    // after error, rerender page
+                    db.getSupWithEmail(user.userId)
+                        .then((result) => {
+                            let supDet = result.rows;
+                            res.render("edit", {
+                                first: supDet[0].first,
+                                last: supDet[0].last,
+                                email: supDet[0].email,
+                                age: supDet[0].age,
+                                city: supDet[0].city,
+                                url: supDet[0].url,
+                                error: true,
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "POST edit catch when rerendering:",
+                                err
+                            );
+                        });
+                });
         });
+    } else {
+        Promise.all([
+            db.makeChangesNoPw(first, last, email, user.userId),
+            db.upsertProfile(age, city, url, user.userId),
+        ])
+            .then(() => {
+                res.redirect("/thanks");
+            })
+            .catch((err) => {
+                console.log("POST edit catch when no password:", err);
+                //again rerendering if error
+                db.getSupWithEmail(user.userId)
+                    .then((result) => {
+                        let supDet = result.rows;
+                        res.render("edit", {
+                            first: supDet[0].first,
+                            last: supDet[0].last,
+                            email: supDet[0].email,
+                            age: supDet[0].age,
+                            city: supDet[0].city,
+                            url: supDet[0].url,
+                            error: true,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(
+                            "POST edit catch when rerendering no password:",
+                            err
+                        );
+                    });
+            });
     }
 });
 

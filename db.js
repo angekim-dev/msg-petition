@@ -31,11 +31,23 @@ module.exports.addProfile = (age, city, url, user_id) => {
 
 //SELECT to get first & last of everyone who signed
 module.exports.getSupportersDetails = () => {
-    return db.query(`SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url FROM users
+    return db.query(
+        `SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url FROM users
     LEFT JOIN user_profiles
     ON users.id = user_profiles.user_id
     JOIN signatures
-    ON user_profiles.user_id = signatures.user_id;`);
+    ON user_profiles.user_id = signatures.user_id;`
+    );
+};
+
+module.exports.getSupWithEmail = () => {
+    return db.query(
+        `SELECT users.first AS first, users.last AS last, users.email AS email, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url
+        FROM users
+        LEFT JOIN user_profiles
+        ON users.id = user_profiles.user_id
+        WHERE users.id = user_id;`
+    );
 };
 
 module.exports.getCity = (city) => {
@@ -76,6 +88,13 @@ module.exports.makeChanges = (first, last, email, password, id) => {
     return db.query(
         `UPDATE users SET first = $1, last = $2, email = $3, password = $4 WHERE id = $5;`,
         [first, last, email, password, id]
+    );
+};
+
+module.exports.makeChangesNoPw = (first, last, email, id) => {
+    return db.query(
+        `UPDATE users SET first = $1, last = $2, email = $3 WHERE id = $4;`,
+        [first, last, email, id]
     );
 };
 

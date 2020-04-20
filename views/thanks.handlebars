@@ -1,5 +1,5 @@
 {{!-- thanks for signing --}}
-<h1>Thank you for signing, {{first}} {{last}}</h1>
+<h1>Thank you for signing</h1>
 {{!-- show total number of signers that you can click on to go to signers page --}}
 <h2>See all {{numberOfSignatures}} signers <a href="/signers">here</a>.</h2>
 <p>Your signature is so beautiful!</p>
@@ -8,3 +8,5 @@
 <button>DELETE</button>
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
 </form>
+
+<a href="/profile/edit">EDIT PROFILE</a>
