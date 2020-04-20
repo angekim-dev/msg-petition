@@ -1,0 +1,17 @@
+<h1>Change comes here</h1>
+{{#if error}}
+<p id="wentWrong">Something went wrong. Try again!</p>
+{{/if}}
+<form method="POST">
+    {{#result}}
+    <input name="first" type="text" autocomplete="off" value={{first}}>
+    <input name="last" type="text" autocomplete="off" value={{last}}>
+    <input name="email" type="text" autocomplete="off" value={{email}}>
+    <input name="password" type="text" autocomplete="off" value={{password}}>
+    <input name="age" type="number" autocomplete="off" value={{age}}>
+    <input name="city" type="text" autocomplete="off" value={{city}}>
+    <input name="url" type="text" autocomplete="off" value={{url}}>
+    {{/result}}
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button>UPDATE</button>
+</form>

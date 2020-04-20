@@ -77,3 +77,10 @@ module.exports.getSignature = (id) => {
 module.exports.getUserInfo = (email) => {
     return db.query(`SELECT * FROM users WHERE email = $1;`, [email]);
 };
+
+module.exports.makeChanges = (first, last, email, password, id) => {
+    return db.query(
+        `UPDATE users SET first = $1, last = $2, email = $3, password = $4 WHERE id = $5;`,
+        [first, last, email, password, id]
+    );
+};

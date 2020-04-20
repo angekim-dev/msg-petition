@@ -249,6 +249,34 @@ app.post("/profile", (req, res) => {
     }
 });
 
+app.get("/profile/edit", (req, res) => {
+    res.render("edit");
+});
+
+app.post("/profile/edit", (req, res) => {
+    let age = req.body.age;
+    let city = req.body.city;
+    let url = req.body.url;
+    let first = req.body.first;
+    let last = req.body.last;
+    let email = req.body.email;
+    let password = req.body.password;
+    if (password != "") {
+        hash(password).then((hashedPw) => {
+            Promise.all([
+                db.makeChanges(
+                    first,
+                    last,
+                    email,
+                    hashedPw,
+                    req.session.user.userId
+                ),
+                // TO DO db. ON CONFLICT stuff
+            ]);
+        });
+    }
+});
+
 app.get("/signers", (req, res) => {
     const { user } = req.session;
     console.log("***232", user);
