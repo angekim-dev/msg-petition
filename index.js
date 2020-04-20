@@ -255,12 +255,25 @@ app.post("/profile", (req, res) => {
 app.get("/profile/edit", (req, res) => {
     const { user } = req.session;
     db.getSupportersDetails(user.userId).then((result) => {
-        console.log("result of getSupporterDetails with user.userId", result);
+        console.log("****258", user.userId);
+        console.log(
+            "result.rows of getSupporterDetails with user.userId",
+            result.rows
+        );
+        let supDet = result.rows;
+        res.render("edit", {
+            first: supDet[0].first,
+            last: supDet[0].last,
+            email: supDet[0].email,
+            age: supDet[0].age,
+            city: supDet[0].city,
+            url: supDet[0].url,
+        });
     });
-    res.render("edit");
 });
 
 app.post("/profile/edit", (req, res) => {
+    const { user } = req.session;
     let age = req.body.age;
     let city = req.body.city;
     let url = req.body.url;
@@ -271,15 +284,8 @@ app.post("/profile/edit", (req, res) => {
     if (password != "") {
         hash(password).then((hashedPw) => {
             Promise.all([
-                db.makeChanges(
-                    first,
-                    last,
-                    email,
-                    hashedPw,
-                    req.session.user.userId
-                ),
-                db.upsertProfile(),
-                // TO DO db. ON CONFLICT stuff
+                db.makeChanges(first, last, email, hashedPw, user.userId),
+                db.upsertProfile(age, city, url, user.userId),
             ]);
         });
     }

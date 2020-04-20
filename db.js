@@ -36,12 +36,6 @@ module.exports.getSupportersDetails = () => {
     ON users.id = user_profiles.user_id
     JOIN signatures
     ON user_profiles.user_id = signatures.user_id;`);
-    // .then((results) => {
-    //     return results.rows;
-    // })
-    // .catch((err) => {
-    //     console.log("Error in getFirstLast", err);
-    // });
 };
 
 module.exports.getCity = (city) => {
@@ -87,4 +81,11 @@ module.exports.makeChanges = (first, last, email, password, id) => {
 
 module.exports.checkSignature = (id) => {
     return db.query(`SELECT id FROM signatures WHERE user_id = $1;`, [id]);
+};
+
+module.exports.upsertProfile = (age, city, url, user_id) => {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE SET age = $1, city = $2, url = $3;`,
+        [age, city, url, user_id]
+    );
 };
