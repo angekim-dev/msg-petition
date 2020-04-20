@@ -234,7 +234,7 @@ app.post("/profile", (req, res) => {
     let url = req.body.url;
     let userId = req.session.user.userId;
     // console.log("*****217*userId", userId);
-    if (url.startsWith("http")) {
+    if (url.startsWith("http") || url == "") {
         db.addProfile(age, city, url, userId)
             .then(() => {
                 res.redirect("/petition");
