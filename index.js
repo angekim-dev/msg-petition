@@ -95,7 +95,7 @@ app.get("/login", (req, res) => {
     const { user } = req.session;
     if (user) {
         console.log("***USER***", user);
-        res.redirect("/petition");
+        res.redirect("/thanks");
     } else {
         res.render("login");
     }
@@ -106,12 +106,13 @@ app.post("/login", (req, res) => {
     let password = req.body.password;
     req.session.user = {};
     // const user = req.session.user;
-    // console.log("***user***", user);
+    console.log("***user***", req.session.user);
     //in our login, we use compare!
     //we take the users provided password and compare it to what we have stored as a hash in our db
     let id;
     db.getUserInfo(email)
         .then((result) => {
+            console.log("***result", result);
             let hashedPw = result.rows[0].password;
             id = result.rows[0].id;
             return hashedPw;
@@ -132,24 +133,24 @@ app.post("/login", (req, res) => {
                 });
             }
         })
-        // .then((userId) => {
-        //     //checking for signature with userID part 4
-        //     console.log("***137", userId);
-        //     console.log("****138", req.session.signatureId);
-        //     db.getSignature(userId)
-        //         .then((signatureId) => {
-        //             if (signatureId.rows[0].id) {
-        //                 req.session.user.signatureId =
-        //                     req.session.signatureId.rows[0].id;
-        //                 res.redirect("/thanks");
-        //             } else {
-        //                 res.redirect("/petition");
-        //             }
-        //         })
-        //         .catch((err) => {
-        //             console.log("Error in getSignature POST /login: ", err);
-        //         });
-        // })
+        .then((userId) => {
+            //checking for signature with userID part 4
+            console.log("***138", userId);
+            console.log("****139", req.session.signatureId);
+            db.checkSignature(userId)
+                .then((signatureId) => {
+                    if (signatureId.rows[0].id) {
+                        req.session.user.signatureId =
+                            req.session.signatureId.rows[0].id;
+                        res.redirect("/thanks");
+                    } else {
+                        res.redirect("/petition");
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error in checkSignature POST /login: ", err);
+                });
+        })
         .catch((err) => {
             console.log("Error in getUserInfo: ", err);
             res.render("login", {
@@ -159,9 +160,10 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
+    console.log("***163*** req.session.signatureId", req.session.signatureId);
     if (req.session.signatureId) {
         console.log(
-            "***141*** req.session.signatureId",
+            "***165*** req.session.signatureId",
             req.session.signatureId
         );
         res.redirect("/thanks");
@@ -182,7 +184,6 @@ app.post("/petition", (req, res) => {
             .then((result) => {
                 // console.log("Result of addSignature", result);
                 req.session.signatureId = result.rows[0].id;
-
                 console.log("got your details");
                 res.redirect("/thanks");
             })
@@ -195,7 +196,7 @@ app.post("/petition", (req, res) => {
 });
 
 app.get("/thanks", (req, res) => {
-    console.log("***179 req.session.signatureId", req.session.signatureId);
+    console.log("***199 req.session.signatureId", req.session.signatureId);
     let numbers;
     if (!req.session.signatureId) {
         res.redirect("/petition");

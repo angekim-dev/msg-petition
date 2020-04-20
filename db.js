@@ -84,3 +84,7 @@ module.exports.makeChanges = (first, last, email, password, id) => {
         [first, last, email, password, id]
     );
 };
+
+module.exports.checkSignature = (id) => {
+    return db.query(`SELECT id FROM signatures WHERE user_id = $1;`, [id]);
+};
