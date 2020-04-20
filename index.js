@@ -227,6 +227,19 @@ app.get("/thanks", (req, res) => {
     }
 });
 
+app.post("/thanks/delete", (req, res) => {
+    console.log("signatureId in thanks/delete", req.session.signatureId);
+    db.deleteSig(req.session.signatureId)
+        .then(() => {
+            delete req.session.signatureId;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("Error in deleteSig: ", err);
+        });
+    console.log("DELETE success");
+});
+
 app.get("/profile", (req, res) => {
     res.render("profile");
 });
