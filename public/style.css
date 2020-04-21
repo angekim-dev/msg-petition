@@ -42,6 +42,9 @@ h2 {
     text-align: center;
     margin: 20px;
 }
+h4 {
+    padding: 5px;
+}
 p {
     padding: 20px;
 }
@@ -69,6 +72,15 @@ p {
 #petitionForm {
     text-align: center;
 }
+#signers-names {
+    width: 90%;
+    margin: 10px auto;
+    padding: 10px;
+}
+#signaturePicture {
+    align-self: center;
+    background-color: whitesmoke;
+}
 #wentWrong {
     color: red;
     text-align: center;
@@ -91,7 +103,4 @@ p {
     100% {
         color: red;
     }
-}
-#signaturePicture {
-    align-self: center;
 }

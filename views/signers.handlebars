@@ -1,6 +1,6 @@
 <h1>You are not alone!</h1>
 <article>
-    <p>Here are the names of fellow heroes - just like you. They also believe in the PLANTiton and its cause.</p><br>
+    <p>Here are the names of fellow heroes - just like you. They also believe in the PLANTition and its cause.</p><br>
     <p>PLANT CARE knowledge should be MANDATORY! No more dead plants, no more excuses!</p>
 </article>
 <h2>Your fellow signers are:</h2>
@@ -11,13 +11,9 @@
     {{/listOfNames}}
 </div> --}}
 {{#signers}}
-<div>
-    <p>{{#if this.url}}
-        <a href="{{url}}">{{/if}}{{first}} {{last}}{{#if this.url}}</a>
-        {{/if}}
-        {{#if this.age}}, {{age}}{{/if}}
-        {{#if this.city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
-    </p>
+<div id="signers-names">
+    <h4>{{#if this.url}}
+        <a href="{{url}}">{{/if}}{{first}} {{last}}{{#if this.url}}</a>{{/if}}{{#if this.age}}, {{age}}{{/if}}{{#if this.city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+    </h4>
 </div>
 {{/signers}}
-{{!-- loop through array and render each one --}}
