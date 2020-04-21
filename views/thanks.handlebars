@@ -1,12 +1,13 @@
 {{!-- thanks for signing --}}
 <h1>Thank you for signing {{first}} {{last}}</h1>
 {{!-- show total number of signers that you can click on to go to signers page --}}
+<p><a href="/profile/edit">EDIT PROFILE</a></p>
 <h2>See all {{numberOfSignatures}} signers <a href="/signers">here</a>.</h2>
-<p>Your signature is so beautiful!</p>
-<img src="{{signaturePicture}}">
+<img id="signaturePicture" src="{{signaturePicture}}">
 <form action="/thanks/delete" method="POST">
+<p>Your signature is so beautiful!</p>
 <button>DELETE SIGNATURE</button>
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
 </form>
 
-<a href="/profile/edit">EDIT PROFILE</a>
+<p><a href="/profile/edit">EDIT PROFILE</a></p>

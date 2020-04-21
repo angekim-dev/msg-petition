@@ -1,7 +1,11 @@
-<h1>Please, register in order to support our cause</h1>
+<h1>Register in order to support our cause</h1>
+<div id="bottom-login">
+<h3>If you are already a member, please <a href="/login">log in</a>.</h3>
+</div>
 {{#if error}}
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
+<div id="form">
 <form method="POST">
     <p><input type="text" placeholder="First Name" name="first" autocomplete="off"></p><br>
     <p><input type="text" placeholder="Last Name" name="last" autocomplete="off"></p><br>
@@ -10,4 +14,4 @@
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>REGISTER</button>
 </form>
-<h5>If you are already a member, please <a href="/login">log in</a>.</h5>
+</div>

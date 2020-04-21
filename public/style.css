@@ -13,16 +13,22 @@ body {
     font-family: "Courier New", Courier, monospace;
     background-image: url(./succulent.jpg);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: stretch; */
+    align-content: center;
+    width: 100%;
+    height: 100%;
 }
 button {
     padding: 5px;
+    margin: 20px;
 }
-footer {
+/* footer {
     background-color: gray;
-    z-index: 1;
-    bottom: 0;
     width: 100%;
-}
+} */
 h1 {
     text-align: center;
     background-color: gray;
@@ -33,13 +39,31 @@ h2 {
     text-align: center;
     margin: 20px;
 }
+p {
+    padding: 20px;
+}
+#bottom-login {
+    padding: 20px;
+}
 #canvas {
     border: dotted black;
     /* color: red; */
     background-color: whitesmoke;
 }
+#form {
+    padding: 20px;
+}
+#headerdiv {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 10px;
+}
 #listOfNames {
     padding: 10px;
+    text-align: center;
+}
+#petitionForm {
     text-align: center;
 }
 #wentWrong {
@@ -65,6 +89,6 @@ h2 {
         color: red;
     }
 }
-#petitionForm {
-    text-align: center;
+#signaturePicture {
+    align-self: center;
 }

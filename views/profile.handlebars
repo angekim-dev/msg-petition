@@ -2,10 +2,12 @@
 {{#if error}}
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
+<div id="form">
 <form method="POST">
-    <p><input type="number" placeholder="age" name="age" autocomplete="off"></p><br>
+    <p><input type="number" min="1" placeholder="age" name="age" autocomplete="off"></p><br>
     <p><input type="text" placeholder="city" name="city" autocomplete="off"></p><br>
     <p><input type="text" placeholder="url" name="url" autocomplete="off"></p><br>
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>CONTINUE</button>
 </form>
+</div>

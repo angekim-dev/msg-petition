@@ -2,15 +2,15 @@
 {{#if error}}
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
-<div>
+<div id="form">
 <form method="POST">
     <div>
         <label for="first">First name</label><br>
-        <input name="first" type="text" autocomplete="off" value={{first}}>
+        <input name="first" type="text" autocomplete="off" value="{{first}}">
     </div>
     <div>
         <label for="last">Last name</label><br>
-        <input name="last" type="text" autocomplete="off" value={{last}}>
+        <input name="last" type="text" autocomplete="off" value="{{last}}">
     </div>
     <div>
         <label for="email">Email</label><br>
@@ -22,11 +22,11 @@
     </div>
     <div>
         <label for="age">Age</label><br>
-        <input name="age" type="number" autocomplete="off" value={{age}}>
+        <input name="age" type="number" min="1" autocomplete="off" value={{age}}>
     </div>
     <div>
         <label for="city">City</label><br>
-        <input name="city" type="text" autocomplete="off" value={{city}}>
+        <input name="city" type="text" autocomplete="off" value="{{city}}">
     </div>
     <div>
         <label for="url">Your homepage</label><br>
