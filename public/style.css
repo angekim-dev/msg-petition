@@ -3,6 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+html {
+    height: 100%;
+}
 article {
     width: 90%;
     margin: 10px auto;
@@ -12,7 +15,7 @@ article {
 body {
     font-family: "Courier New", Courier, monospace;
     background-image: url(./succulent.jpg);
-    overflow: hidden;
+    /* overflow: hidden; */
     display: flex;
     flex-direction: column;
     justify-content: center;
