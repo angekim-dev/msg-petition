@@ -113,7 +113,7 @@ app.post("/login", (req, res) => {
     let id;
     db.getUserInfo(email)
         .then((result) => {
-            console.log("***result", result);
+            // console.log("***result", result);
             let hashedPw = result.rows[0].password;
             id = result.rows[0].id;
             return hashedPw;
@@ -142,7 +142,10 @@ app.post("/login", (req, res) => {
                 .then((results) => {
                     if (results.rows[0].id) {
                         req.session.signatureId = results.rows[0].id;
-                        console.log("***146", results.rows[0].id);
+                        console.log(
+                            "signatureId in checkSignature",
+                            results.rows[0].id
+                        );
                         res.redirect("/thanks");
                     } else {
                         res.redirect("/petition");
@@ -228,8 +231,8 @@ app.get("/thanks", (req, res) => {
 });
 
 app.post("/thanks/delete", (req, res) => {
-    console.log("signatureId in thanks/delete", req.session.userId);
-    db.deleteSig(req.session.signatureId)
+    console.log("userId in thanks/delete", req.session.userId);
+    db.deleteSig(req.session.user.userId)
         .then(() => {
             delete req.session.signatureId;
             console.log(
@@ -390,10 +393,6 @@ app.post("/profile/edit", (req, res) => {
 app.get("/signers", (req, res) => {
     const { user } = req.session;
     console.log("user in GET signers", user);
-    console.log(
-        "req.session.signatureId in GET signers",
-        req.session.signatureId
-    );
     if (!user) {
         res.redirect("/register");
     } else {
