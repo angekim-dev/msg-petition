@@ -280,7 +280,6 @@ app.get("/profile/edit", (req, res) => {
         db.getSupportersDetails(user.userId)
             .then((result) => {
                 console.log("****258", user.userId);
-                console.log("result.first:", result.first);
                 let supDet = result.rows;
                 res.render("edit", {
                     first: supDet[0].first,

@@ -4,13 +4,34 @@
 {{/if}}
 <div>
 <form method="POST">
-    <input name="first" type="text" autocomplete="off" value={{first}}>
-    <input name="last" type="text" autocomplete="off" value={{last}}>
-    <input name="email" type="email" autocomplete="off" value={{email}}>
-    <input name="password" type="text" autocomplete="off">
-    <input name="age" type="number" autocomplete="off" value={{age}}>
-    <input name="city" type="text" autocomplete="off" value={{city}}>
-    <input name="url" type="text" autocomplete="off" value={{url}}>
+    <div>
+        <label for="first">First name</label><br>
+        <input name="first" type="text" autocomplete="off" value={{first}}>
+    </div>
+    <div>
+        <label for="last">Last name</label><br>
+        <input name="last" type="text" autocomplete="off" value={{last}}>
+    </div>
+    <div>
+        <label for="email">Email</label><br>
+        <input name="email" type="email" autocomplete="off" value={{email}}>
+    </div>
+    <div>
+        <label for="password">Password</label><br>
+        <input name="password" type="text" autocomplete="off">
+    </div>
+    <div>
+        <label for="age">Age</label><br>
+        <input name="age" type="number" autocomplete="off" value={{age}}>
+    </div>
+    <div>
+        <label for="city">City</label><br>
+        <input name="city" type="text" autocomplete="off" value={{city}}>
+    </div>
+    <div>
+        <label for="url">Your homepage</label><br>
+        <input name="url" type="text" autocomplete="off" value={{url}}>
+    </div>
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>UPDATE</button>
 </form>
