@@ -228,10 +228,14 @@ app.get("/thanks", (req, res) => {
 });
 
 app.post("/thanks/delete", (req, res) => {
-    console.log("signatureId in thanks/delete", req.session.signatureId);
+    console.log("signatureId in thanks/delete", req.session.userId);
     db.deleteSig(req.session.signatureId)
         .then(() => {
             delete req.session.signatureId;
+            console.log(
+                "***THANKS/DELETE signatureID",
+                req.session.signatureId
+            );
             res.redirect("/petition");
         })
         .catch((err) => {
