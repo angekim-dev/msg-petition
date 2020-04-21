@@ -1,11 +1,12 @@
 <h1>Cool friends from your city {{city}}.</h1>
 <div>
     {{#citizens}}
-    <p>{{#if url}}
+    <p>{{#if this.url}}
         <a href="{{url}}">{{/if}}
-            {{first}} {{last}}
-            {{#if url}}</a>{{/if}}
-            {{#if age}}, {{age}}{{/if}}
-    </p>
+        {{first}} {{last}}
+        {{#if this.url}}</a>
+        {{/if}}, {{age}}, 
+        <a href="/signers/{{city}}">{{city}}</a>
+        </p>
     {{/citizens}}
 </div>

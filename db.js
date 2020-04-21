@@ -53,7 +53,7 @@ module.exports.getSupporters = () => {
 
 module.exports.getCity = (city) => {
     return db.query(
-        `SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS user_url FROM users
+        `SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url FROM users
     JOIN user_profiles
     ON users.id = user_profiles.user_id
     JOIN signatures
