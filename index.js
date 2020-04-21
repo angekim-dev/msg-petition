@@ -277,10 +277,7 @@ app.get("/profile/edit", (req, res) => {
         db.getSupportersDetails(user.userId)
             .then((result) => {
                 console.log("****258", user.userId);
-                console.log(
-                    "result.rows of getSupporterDetails with user.userId",
-                    result.rows
-                );
+                console.log("result.first:", result.first);
                 let supDet = result.rows;
                 res.render("edit", {
                     first: supDet[0].first,
@@ -401,8 +398,9 @@ app.get("/signers", (req, res) => {
         res.redirect("/register");
     } else {
         if (req.session.signatureId) {
-            db.getSupportersDetails()
+            db.getSupporters()
                 .then((result) => {
+                    console.log("***result in signers", result);
                     return result.rows;
                 })
                 .then((result) => {
