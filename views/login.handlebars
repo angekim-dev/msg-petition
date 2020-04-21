@@ -3,7 +3,7 @@
 <p id="wentWrong">Something went wrong. Try again!</p>
 {{/if}}
 <form method="POST">
-    <p><input type="text" placeholder="Email Address" name="email" autocomplete="off"></p><br>
+    <p><input type="email" placeholder="Email Address" name="email" autocomplete="off"></p><br>
     <p><input type="text" placeholder="Your Password" name="password" autocomplete="off"></p><br>
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>LOG IN</button>

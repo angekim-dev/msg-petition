@@ -215,8 +215,8 @@ app.get("/thanks", (req, res) => {
             .then((results) => {
                 // console.log("Results of getSignature: ", results);
                 res.render("thanks", {
-                    first: req.session.firstName,
-                    last: req.session.lastName,
+                    first: req.session.first,
+                    last: req.session.last,
                     signaturePicture: results,
                     numberOfSignatures: numbers,
                 });
@@ -304,7 +304,7 @@ app.post("/profile/edit", (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
     if (url != "" && !url.startsWith("http")) {
-        db.getSupWithEmail(user.userId)
+        db.getSupportersDetails(user.userId)
             .then((result) => {
                 let supDet = result.rows;
                 res.render("edit", {
@@ -318,7 +318,7 @@ app.post("/profile/edit", (req, res) => {
                 });
             })
             .catch((err) => {
-                console.log("POST edit catch in getSupWithEmail:", err);
+                console.log("POST edit catch when url WRONG:", err);
             });
     } else if (password != "") {
         hash(password).then((hashedPw) => {
@@ -332,7 +332,7 @@ app.post("/profile/edit", (req, res) => {
                 .catch((err) => {
                     console.log("POST edit catch after update:", err);
                     // after error, rerender page
-                    db.getSupWithEmail(user.userId)
+                    db.getSupportersDetails(user.userId)
                         .then((result) => {
                             let supDet = result.rows;
                             res.render("edit", {
@@ -364,7 +364,7 @@ app.post("/profile/edit", (req, res) => {
             .catch((err) => {
                 console.log("POST edit catch when no password:", err);
                 //again rerendering if error
-                db.getSupWithEmail(user.userId)
+                db.getSupportersDetails(user.userId)
                     .then((result) => {
                         let supDet = result.rows;
                         res.render("edit", {
@@ -409,7 +409,7 @@ app.get("/signers", (req, res) => {
                     });
                 })
                 .catch((err) => {
-                    console.log("Error in getSupportersDetails: ", err);
+                    console.log("Error in getSupporters: ", err);
                 });
         } else {
             res.redirect("/register");

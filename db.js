@@ -39,6 +39,7 @@ module.exports.getSupportersDetails = (user_id) => {
         [user_id]
     );
 };
+
 module.exports.getSupporters = () => {
     return db.query(`
         SELECT users.first AS first, users.last AS last, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url
@@ -48,16 +49,6 @@ module.exports.getSupporters = () => {
         JOIN signatures
         ON user_profiles.user_id = signatures.user_id;
     `);
-};
-
-module.exports.getSupWithEmail = () => {
-    return db.query(
-        `SELECT users.first AS first, users.last AS last, users.email AS email, user_profiles.age AS age, user_profiles.city AS city, user_profiles.url AS url
-        FROM users
-        LEFT JOIN user_profiles
-        ON users.id = user_profiles.user_id
-        WHERE users.id = user_id;`
-    );
 };
 
 module.exports.getCity = (city) => {
