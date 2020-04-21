@@ -10,10 +10,12 @@
     <p>{{.}}</p>
     {{/listOfNames}}
 </div> --}}
+<article id="signers-center">
 {{#signers}}
-<div id="signers-names">
+<div>
     <h4>{{#if this.url}}
         <a href="{{url}}">{{/if}}{{first}} {{last}}{{#if this.url}}</a>{{/if}}{{#if this.age}}, {{age}}{{/if}}{{#if this.city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
     </h4>
 </div>
 {{/signers}}
+</article>
